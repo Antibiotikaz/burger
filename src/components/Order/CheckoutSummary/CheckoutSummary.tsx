@@ -3,13 +3,21 @@ import Burger from '../../Burger/Burger';
 import Button from '../../UI/Button/Button';
 import classes from './CheckoutSummary.module.css';
 
-interface checkoutSumProps {
-  ingredients: {
+
+interface checkoutSumIngProps {
     salad: number,
     meat: number,
     bacon: number,
-    cheese:number
-  }
+  cheese: number
+  [index: string]: number;
+}
+
+
+interface checkoutSumProps {
+  checkoutContinued: () => void;
+  checkoutCancelled: () => void;
+  ingredients: checkoutSumIngProps;
+
 }
 
 const checkoutSummary = (props: checkoutSumProps) => {
@@ -21,11 +29,11 @@ const checkoutSummary = (props: checkoutSumProps) => {
       </div>
       <Button
         btnType="Danger"
-        clicked
+        clicked={props.checkoutCancelled}
       >CANCEL</Button>
       <Button
         btnType="Success"
-        clicked
+        clicked={props.checkoutContinued}
       >CONTINUE</Button>
     </div>
   );

@@ -6,13 +6,14 @@ import { Route, Switch } from 'react-router-dom';
 
 class App extends Component {
   render() {
-
+    
     return (
       <div>
         <Layout>
           <Switch>
-          <Route path="/" components={BurgerBuilder} />
-          <Route path="/checkout" exact components={Checkout} />
+            <Route path="/checkout"  component={Checkout} />
+            <Route path="/" exact component={BurgerBuilder} />
+         
           </Switch>
         </Layout>
       </div>
