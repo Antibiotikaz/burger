@@ -3,7 +3,9 @@ import Button from '../../../components/UI/Button/Button';
 import classes from './ContactData.module.css';
 import axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
-import { RouteComponentProps, Route } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
+import Input from '../../../components/UI/Input/Input';
+import { type } from 'os';
 
 
 interface contactDataIngProps {
@@ -14,22 +16,106 @@ interface contactDataIngProps {
   [key: string]: number;
 }
 
-interface contactDataProps {
-  ingredients: contactDataIngProps
-  price: number;
+// interface contactDataProps {
+//   ingredients: contactDataIngProps
+//   price: number;
+// }
+
+interface orderFromProps {
+  elementType: string;
+  elementConfig: {
+    type: string;
+    placeholder: string;
+  },
+  value: string;
+  [index: string]: {};
+}
+
+interface deliveryProps {
+  elementType: string;
+      elementConfig: {
+        options: [
+          { value: string; displayValue: string; },
+          { value: string; displayValue: string; }
+        ]
+      },
+      value: string;
+      [index: string]: {};
+}
+interface contactStateProps {
+  orderForm: {
+    name: orderFromProps;
+    street: orderFromProps;
+    zipCode: orderFromProps;
+    country: orderFromProps;
+    email: orderFromProps;
+    deliveryMethod: deliveryProps;
+  },
+  loading: boolean;
+  totalPrice: number;
 }
 
 interface contactRouterComponent extends RouteComponentProps {
-
+  ingredients: contactDataIngProps;
+  price: number;
 }
 
 class ContactData extends Component<contactRouterComponent> {
-  state: = {
-    name: '',
-    email: '',
-    address: {
-      street: '',
-      postalCode: ''
+  state: contactStateProps= {
+    orderForm: {
+      name: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Your Name'
+        },
+        value: ''
+      },
+
+
+      street: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Street'
+        },
+        value: ''
+      },
+      zipCode: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'ZIP'
+        },
+        value: ''
+      },
+      country: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Country'
+        },
+        value: ''
+      },
+      email: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'email',
+          placeholder: 'Your e-mail'
+        },
+        value: ''
+      },
+      deliveryMethod: {
+        elementType: 'select',
+        elementConfig: {
+          options: [
+            {value: 'fastest', displayValue: 'Fastest'},
+            {value: 'cheapest', displayValue: 'Cheapest'}
+          ]
+          
+        },
+        value: ''
+      },
     },
     loading: false,
     totalPrice:0
@@ -68,10 +154,35 @@ class ContactData extends Component<contactRouterComponent> {
 
 
   render() {
+    const allInfo = {
+      name: {} as orderFromProps,
+      street: {} as orderFromProps,
+      zipCode: {} as orderFromProps,
+      country: {} as orderFromProps,
+      email: {} as orderFromProps,
+      deliveryMethod: {} as deliveryProps
+
+    }
+    let testas: keyof typeof allInfo;
+    const formElementsArray = [];
+    for (let key in this.state.orderForm) {
+      formElementsArray.push({
+        id: key,
+        config: this.state.orderForm[key]
+      });
+    }
+
+
     let form = (<form >
-      <input className={classes.Input} type="text" name="name" placeholder="Your name" />
-      <input className={classes.Input} type="email" name="email" placeholder="Your email" />
-      <input className={classes.Input} type="text" name="street" placeholder="Postal Code" />
+      {formElementsArray.map(formElement => (
+        <Input
+        
+          elementType={formElement.config.elementType}
+          elementConfig={formElement.config.elementConfig}
+          value={formElement.config.elementConfig}
+          label=''
+        />
+      ))}
       <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
       </form >);
       
