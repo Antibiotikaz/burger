@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, ChangeEvent } from 'react';
 import Button from '../../../components/UI/Button/Button';
 import classes from './ContactData.module.css';
 import axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { RouteComponentProps } from "react-router-dom";
 import Input from '../../../components/UI/Input/Input';
-import { type } from 'os';
+
 
 
 interface contactDataIngProps {
@@ -16,32 +16,34 @@ interface contactDataIngProps {
   [key: string]: number;
 }
 
-// interface contactDataProps {
-//   ingredients: contactDataIngProps
-//   price: number;
-// }
 
 interface orderFromProps {
   elementType: string;
-  elementConfig: {
-    type: string;
-    placeholder: string;
-  },
+  elementConfig:contactElementConfigProps
   value: string;
-  [index: string]: {};
+  validation?: validationProps;
+  valid?: boolean;
+  touched?: boolean;
 }
 
-interface deliveryProps {
-  elementType: string;
-      elementConfig: {
-        options: [
-          { value: string; displayValue: string; },
-          { value: string; displayValue: string; }
-        ]
-      },
-      value: string;
-      [index: string]: {};
+interface contactElementConfigProps {
+  type?: string;
+  placeholder?: string;
+  options?:contactOptions[];
 }
+
+export interface validationProps {
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+}
+
+interface contactOptions {
+  value: string;
+  displayValue: string;
+}
+
+
 interface contactStateProps {
   orderForm: {
     name: orderFromProps;
@@ -49,16 +51,29 @@ interface contactStateProps {
     zipCode: orderFromProps;
     country: orderFromProps;
     email: orderFromProps;
-    deliveryMethod: deliveryProps;
+    deliveryMethod: orderFromProps;
   },
   loading: boolean;
   totalPrice: number;
+  formIsValid: boolean;
+}
+
+
+interface orderFormProps {
+  name: orderFromProps;
+    street: orderFromProps;
+    zipCode: orderFromProps;
+    country: orderFromProps;
+    email: orderFromProps;
+    deliveryMethod: orderFromProps;
 }
 
 interface contactRouterComponent extends RouteComponentProps {
   ingredients: contactDataIngProps;
   price: number;
 }
+
+
 
 class ContactData extends Component<contactRouterComponent> {
   state: contactStateProps= {
@@ -69,7 +84,12 @@ class ContactData extends Component<contactRouterComponent> {
           type: 'text',
           placeholder: 'Your Name'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
 
 
@@ -79,32 +99,62 @@ class ContactData extends Component<contactRouterComponent> {
           type: 'text',
           placeholder: 'Street'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
+
+
       zipCode: {
         elementType: 'input',
         elementConfig: {
           type: 'text',
           placeholder: 'ZIP'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true,
+          minLength: 5,
+          maxLength: 5
+        },
+        valid: false,
+        touched: false
       },
+
+
       country: {
         elementType: 'input',
         elementConfig: {
           type: 'text',
           placeholder: 'Country'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
+
+
       email: {
         elementType: 'input',
         elementConfig: {
           type: 'email',
           placeholder: 'Your e-mail'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
+
+
       deliveryMethod: {
         elementType: 'select',
         elementConfig: {
@@ -114,31 +164,48 @@ class ContactData extends Component<contactRouterComponent> {
           ]
           
         },
-        value: ''
-      },
+        
+        value: '',
+        validation: {},
+        valid: true
+      }
     },
     loading: false,
-    totalPrice:0
+    totalPrice: 0,
+    formIsValid: false
   }
 
 
   orderHandler = (event: { preventDefault: () => void; }) => {
     event.preventDefault();
-     this.setState({loading: true})
-    //alert('Continue!');
+    this.setState({ loading: true })
+
+
+    
+    const keyHelper = {
+      name: {} as orderFromProps,
+      street: {} as orderFromProps,
+      zipCode: {} as orderFromProps,
+      country: {} as orderFromProps,
+      email: {} as orderFromProps,
+      deliveryMethod: {} as orderFromProps
+
+    }
+    
+    
+    type Name = keyof typeof keyHelper;
+    let key: Name;
+    const formData: { [element: string]: string} = {};
+    for (key in this.state.orderForm) {
+      formData[key] = this.state.orderForm[key].value;
+    }
+
+
     const order = {
       ingredients: this.props.ingredients,
       price: this.props.price,
-      customer: {
-        name: 'Ernis',
-        address: {
-          street: 'testStreet1',
-          zipCode: '454654',
-          country: 'Lithuania'
-        },
-        email: 'test@test.com'
-      },
-      deliveryMethod: 'fastest'
+      orderData: formData
+  
     }
 
     axios.post('/orders.json', order)
@@ -152,6 +219,65 @@ class ContactData extends Component<contactRouterComponent> {
       });
   }
 
+  checkValidity(value: string, rules:validationProps | undefined) {
+    let isValid = true;
+
+    if (!rules) {
+      return true;
+    }
+    if (rules.required) {
+      isValid = value.trim() !== '' && isValid;
+    }
+
+    if (rules?.minLength) {
+      isValid = value.length >= rules.minLength && isValid
+    }
+
+    if (rules?.maxLength) {
+      isValid = value.length <= rules.maxLength && isValid
+    }
+
+
+    return isValid;
+      }
+
+
+
+  inputChangedHandler = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, inputIdentifier: keyof orderFormProps) => {
+    const updatedOrderForm = {
+      ...this.state.orderForm
+    };
+    
+    const updatedFormElement = {
+      ...updatedOrderForm[inputIdentifier]
+    };
+    updatedFormElement.value = event.currentTarget.value;
+    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+    updatedFormElement.touched = true;
+    updatedOrderForm[inputIdentifier] = updatedFormElement;
+    
+
+ 
+    const keyHelper2 = {
+      name: {} as orderFromProps,
+      street: {} as orderFromProps,
+      zipCode: {} as orderFromProps,
+      country: {} as orderFromProps,
+      email: {} as orderFromProps,
+      deliveryMethod: {} as orderFromProps
+
+    }
+    let formIsValid:boolean|undefined = true;
+    type Name = keyof typeof keyHelper2;
+    let key2: Name;
+
+    for (key2 in updatedOrderForm) {
+      formIsValid = updatedOrderForm[key2].valid && formIsValid
+    }
+    console.log(formIsValid);
+    this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
+  };
+
 
   render() {
     const allInfo = {
@@ -160,30 +286,35 @@ class ContactData extends Component<contactRouterComponent> {
       zipCode: {} as orderFromProps,
       country: {} as orderFromProps,
       email: {} as orderFromProps,
-      deliveryMethod: {} as deliveryProps
+      deliveryMethod: {} as orderFromProps
 
     }
     let testas: keyof typeof allInfo;
     const formElementsArray = [];
-    for (let key in this.state.orderForm) {
+    for ( testas in this.state.orderForm) {
       formElementsArray.push({
-        id: key,
-        config: this.state.orderForm[key]
+        id: testas,
+        config: this.state.orderForm[testas]
       });
     }
 
 
-    let form = (<form >
+    let form = (<form
+        onSubmit={this.orderHandler}>
       {formElementsArray.map(formElement => (
         <Input
-        
+          key={formElement.id}
           elementType={formElement.config.elementType}
           elementConfig={formElement.config.elementConfig}
-          value={formElement.config.elementConfig}
+          value={formElement.config.value}
+          invalid={!formElement.config.valid}
+          shouldValidate={formElement.config.validation}
+          touched={formElement.config.touched}
           label=''
+          changed={(event) =>this.inputChangedHandler(event, formElement.id)}
         />
       ))}
-      <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
+      <Button btnType="Success" clicked={this.orderHandler} disabled={!this.state.formIsValid}>ORDER</Button>
       </form >);
       
     
