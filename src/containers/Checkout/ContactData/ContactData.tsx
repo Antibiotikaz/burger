@@ -5,7 +5,8 @@ import axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { RouteComponentProps } from "react-router-dom";
 import Input from '../../../components/UI/Input/Input';
-
+import { connect } from 'react-redux';
+import { reducerStateProps } from '../../../store/reducer';
 
 
 interface contactDataIngProps {
@@ -334,4 +335,11 @@ class ContactData extends Component<contactRouterComponent> {
 }
 
 
-export default ContactData;
+const mapStateToProps = (state :reducerStateProps) => {
+  return {
+    ings: state.ingredients,
+    price: state.totalPrice
+  }
+}
+
+export default connect(mapStateToProps)(ContactData);
