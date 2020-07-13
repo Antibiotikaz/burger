@@ -6,7 +6,7 @@ import Spinner from '../../../components/UI/Spinner/Spinner';
 import { RouteComponentProps } from "react-router-dom";
 import Input from '../../../components/UI/Input/Input';
 import { connect } from 'react-redux';
-import { reducerStateProps } from '../../../store/reducer';
+import { reducerStateProps } from '../../../store/reducers/burgerBuilder';
 
 
 interface contactDataIngProps {
@@ -244,7 +244,8 @@ class ContactData extends Component<contactRouterComponent> {
 
 
 
-  inputChangedHandler = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, inputIdentifier: keyof orderFormProps) => {
+ 
+     inputChangedHandler = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, inputIdentifier: keyof orderFormProps) => {
     const updatedOrderForm = {
       ...this.state.orderForm
     };
@@ -256,7 +257,6 @@ class ContactData extends Component<contactRouterComponent> {
     updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
     updatedFormElement.touched = true;
     updatedOrderForm[inputIdentifier] = updatedFormElement;
-    
 
  
     const keyHelper2 = {

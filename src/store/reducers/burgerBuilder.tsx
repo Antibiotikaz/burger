@@ -1,5 +1,5 @@
-import {ActionTypes, Action} from './actions';
-
+import {ActionTypes} from '../actions/actionsTypes';
+import { Action } from '../actions/burgerBuilderActions';
  export interface reducerIngProps {
   salad: number;
   bacon: number;
@@ -10,7 +10,8 @@ import {ActionTypes, Action} from './actions';
 
  export interface reducerStateProps {
   ingredients: reducerIngProps;
-  totalPrice: number;
+   totalPrice: number;
+   error: boolean;
 }
 
 interface IngredientCostType {
@@ -23,13 +24,10 @@ interface IngredientCostType {
 
 
 const initialState = {
-  ingredients: {
-    salad: 0,
-    bacon: 0,
-    cheese: 0,
-    meat: 0
-  },
-  totalPrice: 0
+  ingredients:{} as reducerIngProps,
+  totalPrice: 0,
+  error: false
+
 };
 
 const INGREDIENT_PRICES: IngredientCostType = {
@@ -58,6 +56,23 @@ const INGREDIENT_PRICES: IngredientCostType = {
           [action.ingredientName]: state.ingredients[action.ingredientName] - 1
          },
          totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName]
+       };
+     
+     case ActionTypes.SET_INGREDIENTS:
+       return {
+         ...state,
+         ingredients: {
+           salad: action.ingredients.salad,
+           bacon: action.ingredients.bacon,
+           cheese: action.ingredients.cheese,
+           meat: action.ingredients.meat
+         },
+         error: false
+       };
+     case ActionTypes.FETCH_INGREDIENTS_FAILED:
+       return {
+         ...state,
+         error: true
        };
      default:
        return state;

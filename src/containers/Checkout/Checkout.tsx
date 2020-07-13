@@ -3,7 +3,7 @@ import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSumm
 import { RouteComponentProps, Route } from "react-router-dom";
 import ContactData from './ContactData/ContactData';
 import { connect } from 'react-redux';
-import { reducerStateProps } from '../../store/reducer';
+import { reducerStateProps } from '../../store/reducers/burgerBuilder';
 
 
 

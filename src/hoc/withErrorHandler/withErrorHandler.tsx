@@ -6,7 +6,7 @@ import { AxiosInstance } from 'axios';
 
 
 interface errorState {
-  error: string;
+  error: boolean;
 }
 
 
