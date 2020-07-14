@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
-import { RouteComponentProps, Route } from "react-router-dom";
+import { RouteComponentProps, Route,Redirect } from "react-router-dom";
 import ContactData from './ContactData/ContactData';
 import { connect } from 'react-redux';
-import { reducerStateProps } from '../../store/reducers/burgerBuilder';
+import { burgerBuilderReducerProps } from '../../store/reducers/burgerBuilder';
 
 
 
 interface checkoutProps extends RouteComponentProps {
   ings: checkoutIngProps;
+  onInitPurchase: () => void;
+  purchased: boolean;
 }
 
 interface checkoutIngProps {
@@ -25,10 +27,6 @@ interface checkoutIngProps {
 class Checkout extends Component<checkoutProps> {
   
 
-
-
-
-
   checkoutCancelledHandler = () => {
     this.props.history.goBack();
   }
@@ -39,27 +37,35 @@ class Checkout extends Component<checkoutProps> {
 
 
   render() {
-    return (
-      <div>
+    let summary = <Redirect to="/" />
+    const purchasedRedirect = this.props.purchased ? <Redirect to="/" /> : null;
+    if (this.props.ings) {
+      summary = (
+        <div>
+          {purchasedRedirect}
         <CheckoutSummary
           ingredients={this.props.ings}
           checkoutCancelled={this.checkoutCancelledHandler}
           checkoutContinued={this.checkoutContinuedHandler}
-         
         />
         <Route
-          path={this.props.match.path + '/contact-data'}
-          component={ContactData}
-        />
-      </div>
-    );
+        path={this.props.match.path + '/contact-data'}
+        component={ContactData}
+      />
+        </div>
+      );
+    }
+    return summary;
   }
     }
 
-const mapStateToProps = (state: reducerStateProps) => {
+const mapStateToProps = (state: burgerBuilderReducerProps) => {
   return {
-    ings: state.ingredients,
+    ings: state.burgerBuilder.ingredients,
+    purchased: state.order.purchased
       }
-    }
+}
+    
+
 
 export default connect(mapStateToProps)(Checkout);

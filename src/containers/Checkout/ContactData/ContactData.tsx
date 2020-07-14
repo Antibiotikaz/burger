@@ -1,12 +1,15 @@
 import React, { Component, ChangeEvent } from 'react';
 import Button from '../../../components/UI/Button/Button';
 import classes from './ContactData.module.css';
-import axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import { RouteComponentProps } from "react-router-dom";
 import Input from '../../../components/UI/Input/Input';
 import { connect } from 'react-redux';
-import { reducerStateProps } from '../../../store/reducers/burgerBuilder';
+import { burgerBuilderReducerProps } from '../../../store/reducers/burgerBuilder';
+import axios from '../../../axios-orders';
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
+import { Dispatch } from 'redux';
+import * as actions from '../../../store/actions/index';
 
 
 interface contactDataIngProps {
@@ -54,7 +57,6 @@ interface contactStateProps {
     email: orderFromProps;
     deliveryMethod: orderFromProps;
   },
-  loading: boolean;
   totalPrice: number;
   formIsValid: boolean;
 }
@@ -69,9 +71,19 @@ interface orderFormProps {
     deliveryMethod: orderFromProps;
 }
 
+interface orderInterface {
+  ingredients: contactDataIngProps;
+    price: number;
+    orderData: {
+        [element: string]: string;
+    };
+}
+
 interface contactRouterComponent extends RouteComponentProps {
   ingredients: contactDataIngProps;
   price: number;
+  onOrderBurger: (order: orderInterface) => void;
+  loading: boolean;
 }
 
 
@@ -166,12 +178,11 @@ class ContactData extends Component<contactRouterComponent> {
           
         },
         
-        value: '',
+        value: 'fastest',
         validation: {},
         valid: true
       }
     },
-    loading: false,
     totalPrice: 0,
     formIsValid: false
   }
@@ -179,9 +190,7 @@ class ContactData extends Component<contactRouterComponent> {
 
   orderHandler = (event: { preventDefault: () => void; }) => {
     event.preventDefault();
-    this.setState({ loading: true })
-
-
+   
     
     const keyHelper = {
       name: {} as orderFromProps,
@@ -209,15 +218,9 @@ class ContactData extends Component<contactRouterComponent> {
   
     }
 
-    axios.post('/orders.json', order)
-      .then(response => {
-      
-        this.setState({ loading: false });
-        this.props.history.push('/');
-      })
-      .catch(error => {
-        this.setState({ loading: false});
-      });
+    this.props.onOrderBurger(order);
+
+
   }
 
   checkValidity(value: string, rules:validationProps | undefined) {
@@ -322,7 +325,7 @@ class ContactData extends Component<contactRouterComponent> {
 
   
     
-    if (this.state.loading) {
+    if (this.props.loading) {
       form = <Spinner/>
     }
     return (
@@ -335,11 +338,20 @@ class ContactData extends Component<contactRouterComponent> {
 }
 
 
-const mapStateToProps = (state :reducerStateProps) => {
+const mapStateToProps = (state: burgerBuilderReducerProps) => {
   return {
-    ings: state.ingredients,
-    price: state.totalPrice
+    ings: state.burgerBuilder.ingredients,
+    price: state.burgerBuilder.totalPrice,
+    loading: state.order.loading
   }
-}
+};
 
-export default connect(mapStateToProps)(ContactData);
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    onOrderBurger: (orderData: string) => dispatch(actions.purchaseBurger(orderData))
+  };
+  
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(ContactData, axios));
