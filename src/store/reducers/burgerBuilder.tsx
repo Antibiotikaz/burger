@@ -1,16 +1,11 @@
 import {ActionTypes} from '../actions/actionsTypes';
 import { Action } from '../actions/burgerBuilderActions';
 import { updateObject } from '../utility';
- export interface reducerIngProps {
-  salad: number;
-  bacon: number;
-  cheese: number;
-  meat: number;
- [key: string]: number
-}
+import { Ingredients } from '../../components/Burger/Burger';
+
 
  export interface reducerStateProps {
-   ingredients: reducerIngProps;
+   ingredients: Ingredients;
    totalPrice: number;
    error: boolean;
    loading?: boolean;
@@ -19,14 +14,14 @@ import { updateObject } from '../utility';
 
 export interface burgerBuilderReducerProps {
   burgerBuilder: {
-    ingredients: reducerIngProps;
+    ingredients: Ingredients;
     totalPrice: number;
     error: boolean;
   },
   order: {
     orders: [{
       price: number,
-      ingredients: reducerIngProps,
+      ingredients: Ingredients,
       id: number,
     }],
     loading: boolean,
@@ -45,7 +40,7 @@ interface IngredientCostType {
 
 
 const initialState = {
-  ingredients:{} as reducerIngProps,
+  ingredients:{} as Ingredients,
   totalPrice: 0,
   error: false
 
@@ -95,7 +90,7 @@ const setIngredients = (state: reducerStateProps, action: Action) => {
 };
 
 
-const fetchIngredientsFailed = (state: reducerStateProps, action: Action) => {
+const fetchIngredientsFailed = (state: reducerStateProps) => {
   return updateObject(state, {error: true});
 }
 
@@ -103,11 +98,11 @@ const fetchIngredientsFailed = (state: reducerStateProps, action: Action) => {
    switch (action.type) {
      case ActionTypes.ADD_INGREDIENT: return addIngredient(state, action);
       
-     case ActionTypes.REMOVE_INGREDIENT:return removeIngredient(state, action)
+     case ActionTypes.REMOVE_INGREDIENT: return removeIngredient(state, action);
      
      case ActionTypes.SET_INGREDIENTS: return setIngredients(state, action);
  
-     case ActionTypes.FETCH_INGREDIENTS_FAILED:return fetchIngredientsFailed(state, action);
+     case ActionTypes.FETCH_INGREDIENTS_FAILED:return fetchIngredientsFailed(state);
        
      default: return state;
   }

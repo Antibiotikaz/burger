@@ -10,15 +10,9 @@ import axios from '../../../axios-orders';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import { Dispatch } from 'redux';
 import * as actions from '../../../store/actions/index';
+import { Ingredients } from '../../../components/Burger/Burger';
 
 
-interface contactDataIngProps {
-  salad: number;
-  bacon: number;
-  cheese: number;                    
-  meat: number;
-  [key: string]: number;
-}
 
 
 interface orderFromProps {
@@ -47,8 +41,9 @@ interface contactOptions {
   displayValue: string;
 }
 
-
-interface contactStateProps {
+// WE COULD BE THE SAME WITH OrderFormProps BELOW THIS BUT WE ARE NOT TRUST ME
+//                   
+export interface contactStateProps {
   orderForm: {
     name: orderFromProps;
     street: orderFromProps;
@@ -62,7 +57,7 @@ interface contactStateProps {
 }
 
 
-interface orderFormProps {
+ interface orderFormProps {
   name: orderFromProps;
     street: orderFromProps;
     zipCode: orderFromProps;
@@ -70,9 +65,10 @@ interface orderFormProps {
     email: orderFromProps;
     deliveryMethod: orderFromProps;
 }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////  
+///////////////////////////////////////////////////
 interface orderInterface {
-  ingredients: contactDataIngProps;
+  ingredients: Ingredients;
     price: number;
     orderData: {
         [element: string]: string;
@@ -80,7 +76,7 @@ interface orderInterface {
 }
 
 interface contactRouterComponent extends RouteComponentProps {
-  ingredients: contactDataIngProps;
+  ingredients: Ingredients;
   price: number;
   onOrderBurger: (order: orderInterface) => void;
   loading: boolean;

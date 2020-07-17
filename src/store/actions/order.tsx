@@ -1,9 +1,10 @@
 import * as actionTypes from './actionsTypes';
 import axios from '../../axios-orders';
 import { Dispatch } from 'redux';
+import { contactStateProps } from '../../containers/Checkout/ContactData/ContactData';
 
 
-export const purchaseBurgerSuccess = (id: string, orderData: string) => {
+export const purchaseBurgerSuccess = (id: string, orderData: contactStateProps) => {
   return {
     type: actionTypes.ActionTypes.PURCHASE_BURGER_SUCCESS,
     orderId: id,
@@ -25,12 +26,12 @@ export const purchaseBurgerStart = () => {
   };
 }
 
-export const purchaseBurger: Function = (orderData: string) => {
+export const purchaseBurger: Function = (orderData: contactStateProps) => {
   return (dispatch: Dispatch) => {
     dispatch(purchaseBurgerStart());
     axios.post('/orders.json', orderData)
       .then(response => {
-        console.log(response.data);
+        console.log(response.data, orderData, 'Cia yra order Data');
         dispatch(purchaseBurgerSuccess(response.data.name, orderData));
       })
       .catch(error => {
@@ -46,7 +47,7 @@ export const purchaseInit = () => {
   };
 }
 
-export const fetchOrdersSuccess = (orders:any[]) => {
+export const fetchOrdersSuccess = (orders:object) => {
   return {
     type: actionTypes.ActionTypes.FETCH_ORDERS_SUCCESS,
     orders: orders

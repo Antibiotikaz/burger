@@ -1,17 +1,14 @@
 import * as actionTypes from '../actions/actionsTypes';
 import { Action } from '../actions/burgerBuilderActions';
 import { updateObject } from '../utility';
+import { contactStateProps } from '../../containers/Checkout/ContactData/ContactData';
 
 
 
  export interface reducerStateProps {
   loading: boolean;
-  orders: reducerOrderProps[];
+  orders: contactStateProps[];
   purchased: boolean;
-}
-
-interface reducerOrderProps {
-  id: string;
 }
 
 
@@ -22,17 +19,17 @@ const initialState = {
 };
 
 
-const purchaseInit = (state: reducerStateProps, action: Action) => {
+const purchaseInit = (state: reducerStateProps) => {
   return updateObject(state, { purchased: false });
 };
 
-const purchaseBurgerStart = (state: reducerStateProps, action: Action) => {
+const purchaseBurgerStart = (state: reducerStateProps) => {
   return updateObject(state, { loading: true });
 }
 
 
 const purchaseBurgerSuccess =(state: reducerStateProps, action: Action) => {
-  const newOrder = updateObject(action.orderData, { id: action.orderId });
+  const newOrder: any = updateObject(action.orderData, { id: action.orderId });
   return updateObject(state, {
     loading: false,
     purchased:true,
@@ -40,11 +37,11 @@ const purchaseBurgerSuccess =(state: reducerStateProps, action: Action) => {
   });
 }
 
-const purchaseBurgerFail = (state: reducerStateProps, action: Action) => {
+const purchaseBurgerFail = (state: reducerStateProps) => {
   return updateObject(state, { loading: false });
 }
 
-const fetchOrderStart = (state: reducerStateProps, action: Action) => {
+const fetchOrderStart = (state: reducerStateProps) => {
   return updateObject(state, { loading: true });
 }
 
@@ -56,21 +53,21 @@ const fetchOrderSuccess = (state: reducerStateProps, action: Action) => {
 }
 
 const fetchOrderFail = (state: reducerStateProps, action: Action) => {
-  return updateObject(state, { loading: true });
+  return updateObject(state, { loading: false });
 }
 
 const reducer = (state: reducerStateProps = initialState, action: Action) => {
   switch (action.type) {
 
-    case actionTypes.ActionTypes.PURCHASE_INIT: return purchaseInit(state, action);
+    case actionTypes.ActionTypes.PURCHASE_INIT: return purchaseInit(state);
      
-    case actionTypes.ActionTypes.PURCHASE_BURGER_START: return purchaseBurgerStart(state, action);
+    case actionTypes.ActionTypes.PURCHASE_BURGER_START: return purchaseBurgerStart(state);
       
     case actionTypes.ActionTypes.PURCHASE_BURGER_SUCCESS: return purchaseBurgerSuccess(state, action);
       
-    case actionTypes.ActionTypes.PURCHASE_BURGER_FAIL: return purchaseBurgerFail(state, action);
+    case actionTypes.ActionTypes.PURCHASE_BURGER_FAIL: return purchaseBurgerFail(state);
     
-    case actionTypes.ActionTypes.FETCH_ORDERS_START: return fetchOrderStart(state, action);
+    case actionTypes.ActionTypes.FETCH_ORDERS_START: return fetchOrderStart(state);
       
     case actionTypes.ActionTypes.FETCH_ORDERS_SUCCESS: return fetchOrderSuccess(state, action);
      

@@ -7,18 +7,12 @@ import * as actions from '../../store/actions/index';
 import { connect } from 'react-redux';
 import { burgerBuilderReducerProps } from '../../store/reducers/burgerBuilder';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import { Ingredients } from '../../components/Burger/Burger';
 
 
 
 
 
-interface ordersIngProps {
-    salad: number;
-    bacon: number;
-    cheese: number;
-    meat: number;
-    [key: string]: number
-}
 
 
 interface orderReducerProps {
@@ -26,7 +20,7 @@ interface orderReducerProps {
   loading: boolean;
   orders: [{
     price: number,
-    ingredients: ordersIngProps,
+    ingredients: Ingredients,
     id: number,
   }];
 }
@@ -36,11 +30,12 @@ class Orders extends Component<orderReducerProps> {
   
   componentDidMount() {
     this.props.onFetchOrders();
+    console.log(this.props.orders, 'cia yra orders');
   };
 
   
   render() {
-    let orders:any= <Spinner />
+    let orders: object= <Spinner />
     if (!this.props.loading) {
     
       orders=this.props.orders.map(order => (

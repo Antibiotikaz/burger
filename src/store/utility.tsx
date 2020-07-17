@@ -1,10 +1,6 @@
 
-interface empty {
 
-}
-
-
-export const updateObject = (oldObject: empty, updateProperties: any) => {
+export const updateObject = (oldObject: Object, updateProperties: Object) => {
   return {
     ...oldObject,
     ...updateProperties

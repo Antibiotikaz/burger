@@ -17,7 +17,7 @@ interface myState {
 class Layout extends React.Component<layoutProps, myState> {
   
   state = {
-    showSideDrawer: true
+    showSideDrawer: false
   }
 
 

@@ -1,12 +1,12 @@
 import * as actionsTypes from './actionsTypes';
 import axios from '../../axios-orders';
-import { reducerIngProps } from '../reducers/burgerBuilder';
+import { Ingredients } from '../../components/Burger/Burger';
 import { Dispatch } from 'redux';
 
 interface add_Ingredient {
   type: typeof actionsTypes.ActionTypes.ADD_INGREDIENT
   ingredientName: string;
-  ingredients: reducerIngProps;
+  ingredients: Ingredients;
   orderId: string;
   orderData: { [element: string]: string; }
   orders: { [element: string]: string; }
@@ -15,7 +15,7 @@ interface add_Ingredient {
 interface remove_Ingredient {
   type: typeof actionsTypes.ActionTypes.REMOVE_INGREDIENT
   ingredientName: string;
-  ingredients: reducerIngProps;
+  ingredients: Ingredients;
   orderId: string;
   orderData: { [element: string]: string; }
   orders: { [element: string]: string; }
@@ -23,7 +23,7 @@ interface remove_Ingredient {
 
 interface set_Ingredients {
   type: typeof actionsTypes.ActionTypes.SET_INGREDIENTS
-  ingredients: reducerIngProps;
+  ingredients: Ingredients;
   ingredientName: string;
   orderId: string;
   orderData: { [element: string]: string; }
@@ -33,7 +33,7 @@ interface set_Ingredients {
 interface fetch_IngredientsFailed {
   type: typeof actionsTypes.ActionTypes.FETCH_INGREDIENTS_FAILED
   ingredientName: string;
-  ingredients: reducerIngProps;
+  ingredients: Ingredients;
   orderId: string;
   orderData: { [element: string]: string; }
   orders: { [element: string]: string; }
@@ -45,7 +45,7 @@ interface purchase_BurgerSuccess {
   orderData: { [element: string]: string; }
   type: typeof actionsTypes.ActionTypes.PURCHASE_BURGER_SUCCESS;
   ingredientName: string;
-  ingredients: reducerIngProps;
+  ingredients: Ingredients;
   orders: { [element: string]: string; }
  
 }
@@ -53,7 +53,7 @@ interface purchase_BurgerSuccess {
 interface purchase_BurgerFail {
   type: typeof actionsTypes.ActionTypes.PURCHASE_BURGER_FAIL;
   ingredientName: string;
-  ingredients: reducerIngProps;
+  ingredients: Ingredients;
   orderId: string;
   orderData: { [element: string]: string; }
   orders: { [element: string]: string; }
@@ -62,7 +62,7 @@ interface purchase_BurgerFail {
 interface purchase_BurgerStart {
   type: typeof actionsTypes.ActionTypes.PURCHASE_BURGER_START;
   ingredientName: string;
-  ingredients: reducerIngProps;
+  ingredients: Ingredients;
   orderId: string;
   orderData: { [element: string]: string; }
   orders: { [element: string]: string; }
@@ -71,7 +71,7 @@ interface purchase_BurgerStart {
 interface purchase_Init {
   type: typeof actionsTypes.ActionTypes.PURCHASE_INIT;
   ingredientName: string;
-  ingredients: reducerIngProps;
+  ingredients: Ingredients;
   orderId: string;
   orderData: { [element: string]: string; }
   orders: { [element: string]: string; }
@@ -82,7 +82,7 @@ interface purchase_Init {
 interface fetch_ordersStart {
   type: typeof actionsTypes.ActionTypes.FETCH_ORDERS_START;
   ingredientName: string;
-  ingredients: reducerIngProps;
+  ingredients: Ingredients;
   orderId: string;
   orderData: { [element: string]: string; }
   orders: { [element: string]: string; }
@@ -93,7 +93,7 @@ interface fetch_ordersSuccess {
   type: typeof actionsTypes.ActionTypes.FETCH_ORDERS_SUCCESS;
   orders: { [element: string]: string; }
   ingredientName: string;
-  ingredients: reducerIngProps;
+  ingredients: Ingredients;
   orderId: string;
   orderData: { [element: string]: string; }
 }
@@ -101,7 +101,7 @@ interface fetch_ordersSuccess {
 interface fetch_ordersFail {
   type: typeof actionsTypes.ActionTypes.FETCH_ORDERS_FAIL;
   ingredientName: string;
-  ingredients: reducerIngProps;
+  ingredients: Ingredients;
   orderId: string;
   orderData: { [element: string]: string; }
   orders: { [element: string]: string; }
@@ -149,9 +149,10 @@ export const initIngredients: Function = () => {
   return (dispatch: Dispatch) => {
     axios.get('https://react-my-burger-f85df.firebaseio.com/ingredients.json')
     .then(response => {
-      dispatch(setIngredients(response.data))
+      dispatch(setIngredients(response.data));
+      console.log(response.data, 'dedam ingridientus');
     })
-    .catch(() => {
+    .catch(error => {
       dispatch(fetchIngredientsFailed());
     });
   };

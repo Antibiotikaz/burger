@@ -12,24 +12,12 @@ import { connect } from 'react-redux';
 import { burgerBuilderReducerProps } from '../../store/reducers/burgerBuilder';
 import { Dispatch } from 'redux';
 import * as actions from '../../store/actions/index';
+import { Ingredients } from '../../components/Burger/Burger';
  
 
 
-
-
-
-export interface IngredientType {
-  salad: number;
-  bacon: number;
-  cheese: number;
-  meat: number;
- [key: string]: number
-}
-
-
-
 interface burgerBuilderProps extends RouteComponentProps{
-  ings: IngredientType | null;
+  ings: Ingredients | null;
   onIngredientAdded:(ingName: string) => void;
   onIngredientRemoved: (ingName: string) => void;
   onInitIngredients: () => void;
@@ -43,7 +31,6 @@ interface burgerBuilderProps extends RouteComponentProps{
 }
 
 
- 
 
 
 class BurgerBuilder extends Component<burgerBuilderProps>{
@@ -59,7 +46,7 @@ class BurgerBuilder extends Component<burgerBuilderProps>{
     this.props.onInitIngredients();
   }
 
-  updatePurchaseState(ingredients: { [x: string]: any; salad?: number; bacon?: number; cheese?: number; meat?: number; }) {
+  updatePurchaseState(ingredients: { [x: string]: number; salad: number; bacon: number; cheese: number; meat: number; }) {
     const sum = Object.keys(ingredients)
       .map(igKey => {
         return ingredients[igKey];
