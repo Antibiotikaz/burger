@@ -1,13 +1,12 @@
 import * as actionTypes from '../actions/actionsTypes';
 import { Action } from '../actions/burgerBuilderActions';
 import { updateObject } from '../utility';
-import { contactStateProps } from '../../containers/Checkout/ContactData/ContactData';
 
 
 
  export interface reducerStateProps {
   loading: boolean;
-  orders: contactStateProps[];
+  orders: object[];
   purchased: boolean;
 }
 
@@ -29,12 +28,12 @@ const purchaseBurgerStart = (state: reducerStateProps) => {
 
 
 const purchaseBurgerSuccess =(state: reducerStateProps, action: Action) => {
-  const newOrder: any = updateObject(action.orderData, { id: action.orderId });
+  const newOrder = updateObject(action.orderData, { id: action.orderId });
   return updateObject(state, {
     loading: false,
     purchased:true,
     orders: state.orders.concat(newOrder)
-  });
+  }); 
 }
 
 const purchaseBurgerFail = (state: reducerStateProps) => {

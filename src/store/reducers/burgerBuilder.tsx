@@ -61,6 +61,7 @@ const addIngredient = (state: reducerStateProps, action: Action) => {
     ingredients: updatedIngredients,
     totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName]
   }
+
   return updateObject(state, updatedState);
 };
 
@@ -77,6 +78,7 @@ const removeIngredient = (state: reducerStateProps, action: Action) => {
 };
 
 const setIngredients = (state: reducerStateProps, action: Action) => { 
+  console.log(action.ingredients.bacon, 'cia yra action ingredients');
   return updateObject(state, {
     ingredients: {
       salad: action.ingredients.salad,

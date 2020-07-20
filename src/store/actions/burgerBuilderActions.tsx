@@ -131,7 +131,8 @@ export const removeIngredient = (name: string) => {
   };
 };
 
-export const setIngredients = (ingredients:set_Ingredients) => {
+export const setIngredients = (ingredients: set_Ingredients) => {
+  console.log(ingredients, 'ingredientai is actionoBurgelBuilder');
   return {
     type: actionsTypes.ActionTypes.SET_INGREDIENTS,
     ingredients: ingredients
@@ -150,7 +151,7 @@ export const initIngredients: Function = () => {
     axios.get('https://react-my-burger-f85df.firebaseio.com/ingredients.json')
     .then(response => {
       dispatch(setIngredients(response.data));
-      console.log(response.data, 'dedam ingridientus');
+      console.log(response.data, 'Paimam ingridientus is Firebase');
     })
     .catch(error => {
       dispatch(fetchIngredientsFailed());

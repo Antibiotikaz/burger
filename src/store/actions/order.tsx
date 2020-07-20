@@ -25,13 +25,13 @@ export const purchaseBurgerStart = () => {
     type: actionTypes.ActionTypes.PURCHASE_BURGER_START
   };
 }
-
+// CIA NEPADUODA INGRIDIENTU!
 export const purchaseBurger: Function = (orderData: contactStateProps) => {
   return (dispatch: Dispatch) => {
     dispatch(purchaseBurgerStart());
     axios.post('/orders.json', orderData)
       .then(response => {
-        console.log(response.data, orderData, 'Cia yra order Data');
+        console.log(orderData, 'Cia yra order Data');
         dispatch(purchaseBurgerSuccess(response.data.name, orderData));
       })
       .catch(error => {
@@ -73,13 +73,14 @@ export const fetchOrders: Function = () => {
     dispatch(fetchOrdersStart());
     axios.get('orders.json')
     .then(res => {
-      const fetchedOrders = [];
+      const fetchedOrders:object[] = [];
       for (let key in res.data) {
         fetchedOrders.push({
           ...res.data[key],
           id:key
         });
       }
+      console.log(fetchedOrders, 'cia yra fetch orders');
       dispatch(fetchOrdersSuccess(fetchedOrders));
     })
     .catch(err => {

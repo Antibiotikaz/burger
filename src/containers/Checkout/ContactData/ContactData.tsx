@@ -80,6 +80,7 @@ interface contactRouterComponent extends RouteComponentProps {
   price: number;
   onOrderBurger: (order: orderInterface) => void;
   loading: boolean;
+  ings:Ingredients
 }
 
 
@@ -208,7 +209,7 @@ class ContactData extends Component<contactRouterComponent> {
 
 
     const order = {
-      ingredients: this.props.ingredients,
+      ingredients: this.props.ings,
       price: this.props.price,
       orderData: formData
   
@@ -335,6 +336,7 @@ class ContactData extends Component<contactRouterComponent> {
 
 
 const mapStateToProps = (state: burgerBuilderReducerProps) => {
+  console.log(state.burgerBuilder.ingredients, 'state.burgerbuilder.ingredients');
   return {
     ings: state.burgerBuilder.ingredients,
     price: state.burgerBuilder.totalPrice,
@@ -345,7 +347,7 @@ const mapStateToProps = (state: burgerBuilderReducerProps) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onOrderBurger: (orderData: string) => dispatch(actions.purchaseBurger(orderData))
+    onOrderBurger: (orderData: { [element: string]: string; }) => dispatch(actions.purchaseBurger(orderData))
   };
   
 };
